@@ -28,3 +28,9 @@ jobs:
           make bin/skopeo
           ls -la ./bin/skopeo
           ./bin/skopeo sync --help
+      - name: Upload patched skopeo
+        uses: actions/upload-artifact@v3
+        with:
+          name: skopeo-patched
+          path: ./skopeo/bin/skopeo
+

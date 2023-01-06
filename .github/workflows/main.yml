@@ -1,0 +1,30 @@
+name: Build Go binary
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+      - name: Refresh apt metadata
+        run: sudo apt-get update
+      - name: Install required packages
+        run: sudo apt install -y make git libgpgme-dev libassuan-dev libbtrfs-dev libdevmapper-dev pkg-config
+      - name: Build patched skopeo
+        run: |
+          git clone https://github.com/containers/skopeo.git
+          cp Add_prependImagePrefix.patch ./skopeo
+          cd skopeo
+          git apply ./Add_prependImagePrefix.patch
+          make bin/skopeo
+          ls -la ./bin/skopeo
+          ./bin/skopeo sync --help

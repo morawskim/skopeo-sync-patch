@@ -1,0 +1,35 @@
+Subject: [PATCH] Add prependImagePrefix
+---
+Index: cmd/skopeo/sync.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmd/skopeo/sync.go b/cmd/skopeo/sync.go
+--- a/cmd/skopeo/sync.go	(revision e71305f7bbb950380f22b17c5eed44939befa56d)
++++ b/cmd/skopeo/sync.go	(date 1672986751896)
+@@ -47,6 +47,7 @@
+ 	preserveDigests          bool                      // Preserve digests during sync
+ 	keepGoing                bool                      // Whether or not to abort the sync if there are any errors during syncing the images
+ 	appendSuffix             string                    // Suffix to append to destination image tag
++	prependImagePrefix       string                    // Prefix to prepend to destination image name
+ }
+ 
+ // repoDescriptor contains information of a single repository used as a sync source.
+@@ -114,6 +115,7 @@
+ 	flags.StringVarP(&opts.destination, "dest", "d", "", "DESTINATION transport type")
+ 	flags.BoolVar(&opts.scoped, "scoped", false, "Images at DESTINATION are prefix using the full source image path as scope")
+ 	flags.StringVar(&opts.appendSuffix, "append-suffix", "", "String to append to DESTINATION tags")
++	flags.StringVar(&opts.prependImagePrefix, "prepend-image-suffix", "", "String to prepend to DESTINATION images")
+ 	flags.BoolVarP(&opts.all, "all", "a", false, "Copy all images if SOURCE-IMAGE is a list")
+ 	flags.BoolVar(&opts.dryRun, "dry-run", false, "Run without actually copying data")
+ 	flags.BoolVar(&opts.preserveDigests, "preserve-digests", false, "Preserve digests of images and lists")
+@@ -644,7 +646,7 @@
+ 				destSuffix = path.Base(destSuffix)
+ 			}
+ 
+-			destRef, err := destinationReference(path.Join(destination, destSuffix)+opts.appendSuffix, opts.destination)
++			destRef, err := destinationReference(path.Join(destination, opts.prependImagePrefix+destSuffix)+opts.appendSuffix, opts.destination)
+ 			if err != nil {
+ 				return err
+ 			}

@@ -57,5 +57,4 @@ jobs:
         with:
           name: ${{ env.GITHUB_REF_NAME }}
           tag: ${{ env.GITHUB_REF_NAME }}
-          draft: true
           artifacts: ${{steps.download.outputs.download-path}}/skopeo

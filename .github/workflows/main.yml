@@ -29,7 +29,7 @@ jobs:
           cp Add_prependImagePrefix.patch ./skopeo
           cd skopeo
           git apply ./Add_prependImagePrefix.patch
-          make bin/skopeo
+          CGO_ENABLED=0 make bin/skopeo BUILDTAGS=containers_image_openpgp GO_DYN_FLAGS=
           ls -la ./bin/skopeo
           ./bin/skopeo sync --help
       - name: Upload patched skopeo
